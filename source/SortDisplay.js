@@ -58,8 +58,14 @@ function calculateDimensions() {
 function drawArray() {
     ClearCanvas()
     for (let i = 0; i < num_elements; i++) {
-        draw_line(i, base_line_color)
+        drawBaseLine(i, base_line_color)
     }
+}
+
+function drawBaseLine(pos) {
+    let size = sorting_array[pos]
+    color = "#" + Math.round(20 + 180 * (size/num_elements)).toString(16) + "0000"
+    draw_line(pos,color)
 }
 
 function draw_line(pos, color) {
