@@ -26,6 +26,7 @@ function nextStep() {
             stopSorting()
             return
         }
+        swapped_this_pass = false;
     }
     drawArray()
     draw_last_swapped()
