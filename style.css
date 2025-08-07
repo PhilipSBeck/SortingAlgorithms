@@ -1,0 +1,40 @@
+body {
+    background-color: rgb(162, 192, 247);
+    min-width: 900;
+}
+
+h1 {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h2 {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#Options {
+    background-color: #babcce;
+    position: absolute;
+    height: 70%;
+    width: 230px;
+    padding: 0 10px;
+    outline: solid 2px rgb(46, 52, 68);
+}
+
+#Options > input {
+    margin-bottom: 10px;
+}
+
+#Canvas {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    outline: solid 2px rgb(38, 45, 59);
+}
+
+#ControlButtons {
+    text-align: center;
+}

@@ -1,0 +1,27 @@
+<html>
+<head>
+    <title>Sorting Algorithms</title>
+
+    <script src="source\Main.js"></script>
+    <script src="source\SortDisplay.js"></script>
+    <script src="source\BubbleSort.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1 id="Title">Bubble Sort</h1>
+    <h2 id="Stats">Stats</h2>
+    <div id="Options">
+        <h2>Options</h2>
+        <span class="OptionLabel">Number of elements:</span>
+        <input type="number" id="QuantityInput" name="QuantityInput" min=2 max=500 value=100 onchange="onQuantityChanged()">
+        <span class="OptionLabel">Delay:</span>
+        <input type="number" id="DelayInput" name="DelayInput" min=1 max=500 value=10 onchange="onDelayChanged()">
+        <div id="ControlButtons">
+            <button id="ResetButton" onclick="reset()">Reset</button>
+            <button id="RunButton" onclick="bubbleSort()">Run</button>
+        </div>
+    </div>
+    <canvas id="Canvas" width="600" height="500"></canvas>
+</body>
+</html>
