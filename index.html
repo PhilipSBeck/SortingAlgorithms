@@ -5,6 +5,7 @@
     <script src="source\Main.js"></script>
     <script src="source\SortDisplay.js"></script>
     <script src="source\BubbleSort.js"></script>
+    <script src="source\MergeSort.js"></script>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,13 +14,18 @@
     <h2 id="Stats">Stats</h2>
     <div id="Options">
         <h2>Options</h2>
+        <select id="AlgorithmPicker" onchange="onAlgorithmChanged()">
+            <option value="Bubble Sort">Bubble Sort</option>
+            <option value="Merge Sort">Merge Sort</option>
+        </select>
+        <br>
         <span class="OptionLabel">Number of elements:</span>
         <input type="number" id="QuantityInput" name="QuantityInput" min=2 max=500 value=100 onchange="onQuantityChanged()">
         <span class="OptionLabel">Delay:</span>
         <input type="number" id="DelayInput" name="DelayInput" min=1 max=500 value=10 onchange="onDelayChanged()">
         <div id="ControlButtons">
             <button id="ResetButton" onclick="reset()">Reset</button>
-            <button id="RunButton" onclick="bubbleSort()">Run</button>
+            <button id="RunButton" onclick="run_sort()">Run</button>
         </div>
     </div>
     <canvas id="Canvas" width="600" height="600"></canvas>

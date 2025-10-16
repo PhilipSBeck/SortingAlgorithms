@@ -121,3 +121,9 @@ function stopSorting() {
     currently_sorting = false;
     drawArray();
 }
+
+function draw_last_swapped() {
+    if (lastSwapped1 < 0 || lastSwapped2 < 0) return;
+    draw_line(lastSwapped1, swap_color)
+    draw_line(lastSwapped2, swap_color)
+}
