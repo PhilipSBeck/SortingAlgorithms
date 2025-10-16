@@ -6,6 +6,13 @@ let old_array_2
 let old_array_2_pos
 let new_array
 
+// last swap
+let merge_last_swap_new_arr = -1
+let merge_last_swap_new_pos = -1
+let merge_last_swap_old_arr = -1
+let merge_last_swap_old_pos = -1
+
+
 function mergeSort()
 {
     if (currently_sorting) return
@@ -52,6 +59,10 @@ function merge_array() {
         old_array_2 += 2
         old_array_1_pos = 0
         old_array_2_pos = 0
+        merge_last_swap_new_arr = -1
+        merge_last_swap_new_pos = -1
+        merge_last_swap_old_arr = -1
+        merge_last_swap_old_pos = -1
         if (old_array_2 >= old_arrays.length) {
             if (old_array_1 < old_arrays.length) {
                 new_arrays.push(old_arrays[old_array_1])
@@ -87,6 +98,11 @@ function merge_array() {
 }
 
 function move_into_new_array(old_array, old_array_pos) {
+    merge_last_swap_new_arr = new_array
+    merge_last_swap_new_pos = new_arrays[new_array].length
+    merge_last_swap_old_arr = old_array
+    merge_last_swap_old_pos = old_array_pos
+
     total_swaps += 1;
     new_arrays[new_array].push(old_arrays[old_array][old_array_pos])
     old_arrays[old_array][old_array_pos] = -1
@@ -113,16 +129,18 @@ function new_pass() {
 
 function fill_sorting_array() {
     sorting_array = []
-    for (array of new_arrays)
-    {
-        for (element of array) {
-            sorting_array.push(element)
+    for (let i = 0; i < new_arrays.length; i++) {
+        for (let j = 0; j < new_arrays[i].length; j++){
+            sorting_array.push(new_arrays[i][j])
+            if (i == merge_last_swap_new_arr && j == merge_last_swap_new_pos)
+            {
+                lastSwapped2 = lastSwapped1 = sorting_array.length - 1;
+            }
         }
     }
-    for (array of old_arrays)
-    {
-        console.log(array)
-        for (element of array) {
+    for (let i = 0; i < old_arrays.length; i++) {
+        for (let j = 0; j < old_arrays[i].length; j++){
+            let element = old_arrays[i][j]
             if (element > 0)
             {
                 sorting_array.push(element)

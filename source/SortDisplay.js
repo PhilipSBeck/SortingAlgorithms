@@ -124,6 +124,7 @@ function stopSorting() {
 
 function draw_last_swapped() {
     if (lastSwapped1 < 0 || lastSwapped2 < 0) return;
+    console.log("Drawing Last Swapped")
     draw_line(lastSwapped1, swap_color)
     draw_line(lastSwapped2, swap_color)
 }
