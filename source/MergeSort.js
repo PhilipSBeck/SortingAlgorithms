@@ -4,6 +4,8 @@ let old_array_1
 let old_array_1_pos
 let old_array_2
 let old_array_2_pos
+let compare_pos_1 = -1
+let compare_pos_2 = -1
 let new_array
 
 // last swap
@@ -48,6 +50,7 @@ function merge_nextStep() {
     fill_sorting_array()
     drawArray()
     draw_last_swapped()
+    merge_draw_comparison()
     updateStats()
 }
 
@@ -138,13 +141,29 @@ function fill_sorting_array() {
             }
         }
     }
+
     for (let i = 0; i < old_arrays.length; i++) {
         for (let j = 0; j < old_arrays[i].length; j++){
             let element = old_arrays[i][j]
             if (element > 0)
             {
+                if(i == old_array_1 && j == old_array_1_pos) {
+                    compare_pos_1 = sorting_array.length
+                }
+                else if(i == old_array_2 && j == old_array_2_pos) {
+                    compare_pos_2 = sorting_array.length
+                } 
                 sorting_array.push(element)
             }
         }
+    }
+}
+
+function merge_draw_comparison() {
+    if (compare_pos_1 != -1) {
+        draw_line(compare_pos_1, highlight_color1);
+    }
+    if (compare_pos_2 != -1) {
+            draw_line(compare_pos_2, highlight_color2);
     }
 }

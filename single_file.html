@@ -1,0 +1,390 @@
+<html>
+<head>
+    <title>Sorting Algorithms</title>
+
+    <script>
+        var currentElement = 0;
+var pass = 0;
+var total_comparisons = 0;
+var total_swaps = 0;
+var lastSwapped1 = -1
+var lastSwapped2 = -1
+
+var picker_value = "Bubble Sort"
+
+function onAlgorithmChanged()
+{
+    let picker = document.getElementById("AlgorithmPicker");
+    picker_value = picker.value;
+    document.getElementById("Title").innerText = picker_value
+}
+
+function updateStats() {
+    let stats = document.getElementById("Stats");
+    stats.innerText = "Pass: " + pass + " Comparisons: " + total_comparisons + " Swaps: " + total_swaps;
+}
+
+function run_sort() {
+    switch (picker_value) {
+        case "Merge Sort":
+            mergeSort();
+            break;
+        case "Bubble Sort":
+        default:
+            bubbleSort();
+            break;
+    }
+}
+const MAX_ELEMENTS = 500
+
+var num_elements = 50
+var sorting_array = []
+
+var base_line_color = '#3d0101ff'
+var swap_color = '#e69d00ff'
+var highlight_color1 = '#1ab61aff'
+var highlight_color2 = '#53f553ff'
+var background_color = '#f7f7f7ff';
+var line_width = 3
+var line_spacing = 0
+var line_height_multiplier = 3
+var sort_delay = 20
+
+var start_x = 0
+var start_y = 0
+
+var currently_sorting = false
+let interval_varible;
+
+var canvas
+var ctx
+
+window.onload = () => {
+    canvas = document.getElementById('Canvas');
+    ctx = canvas.getContext('2d');
+
+    document.getElementById("QuantityInput").value = num_elements;
+    document.getElementById("DelayInput").value = sort_delay;
+
+    ClearCanvas()
+    reset()
+}
+
+function ClearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = background_color;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        let temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+}
+
+function calculateDimensions() {
+    line_width = Math.max(1, Math.floor(canvas.width / num_elements) - line_spacing)
+    line_height_multiplier = Math.max(1, Math.floor(canvas.height / num_elements))
+    start_x = Math.round((canvas.width - (num_elements * (line_width + line_spacing)))/2)
+}
+
+
+function drawArray() {
+    ClearCanvas()
+    for (let i = 0; i < num_elements; i++) {
+        drawBaseLine(i, base_line_color)
+    }
+}
+
+function drawBaseLine(pos) {
+    let size = sorting_array[pos]
+    color = "#" + Math.round(20 + 180 * (size/num_elements)).toString(16) + "0000"
+    draw_line(pos,color)
+}
+
+function draw_line(pos, color) {
+    let y_start = canvas.height - start_y
+    let x_pos = start_x + (pos * (line_width + line_spacing))
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.fillRect(x_pos, y_start, line_width, -sorting_array[pos] * line_height_multiplier)
+    ctx.stroke();
+}
+
+function reset() {
+    stopSorting()
+
+    calculateDimensions();
+
+    sorting_array = [];
+    for (let i = 0; i < num_elements; i++) {
+        sorting_array.push(i + 1);
+    }
+    shuffleArray(sorting_array);
+
+    drawArray();
+}
+
+function KeepValueWithinBounds(element) {
+    let value = parseInt(element.value);
+    let max = parseInt(element.max);
+    let min = parseInt(element.min);
+    if (value > max) {
+        value = max;
+    }
+    else if (value < min) {
+        value = min;
+    }
+}
+
+function onQuantityChanged() {
+    var quantityInput = document.getElementById("QuantityInput");
+    KeepValueWithinBounds(quantityInput);
+    num_elements = quantityInput.value;
+    reset()
+}
+
+function onDelayChanged() {
+    var delayInput = document.getElementById("DelayInput");
+    KeepValueWithinBounds(delayInput);
+    sort_delay = delayInput.value;
+}
+
+function stopSorting() {
+    window.clearInterval(interval_varible);
+    currently_sorting = false;
+    drawArray();
+}
+
+function draw_last_swapped() {
+    if (lastSwapped1 < 0 || lastSwapped2 < 0) return;
+    console.log("Drawing Last Swapped")
+    draw_line(lastSwapped1, swap_color)
+    draw_line(lastSwapped2, swap_color)
+}
+let swapped_this_pass = false;
+
+function bubbleSort() {
+    if (currently_sorting) return
+    currently_sorting = true
+    pass = 0
+    currentElement = 0
+    lastSwapped1 = -1
+    lastSwapped2 = -1
+    total_comparisons = 0
+    total_swaps = 0
+    interval_varible = window.setInterval(bubble_nextStep, sort_delay)
+}
+
+function bubble_nextStep() {
+    if (currentElement == sorting_array.length - 1 - pass) {
+        pass++;
+        currentElement = 0;
+        if (pass == sorting_array.length - 1 || swapped_this_pass == false) {
+            stopSorting()
+            return
+        }
+        swapped_this_pass = false;
+    }
+    drawArray()
+    draw_last_swapped()
+    bubble_compare_and_swap()
+    updateStats()
+}
+
+function bubble_compare_and_swap(){
+    total_comparisons++;
+    draw_line(currentElement, highlight_color1);
+    draw_line(currentElement + 1, highlight_color2);
+    if (sorting_array[currentElement] > sorting_array[currentElement + 1]) {
+        lastSwapped1 = currentElement;
+        lastSwapped2 = currentElement + 1;
+        let temp = sorting_array[currentElement];
+        sorting_array[currentElement] = sorting_array[currentElement + 1];
+        sorting_array[currentElement + 1] = temp;
+        
+        total_swaps++;
+
+        swapped_this_pass = true;
+    }
+    currentElement += 1
+}
+let old_arrays = []
+let new_arrays = []
+let old_array_1
+let old_array_1_pos
+let old_array_2
+let old_array_2_pos
+let new_array
+
+// last swap
+let merge_last_swap_new_arr = -1
+let merge_last_swap_new_pos = -1
+let merge_last_swap_old_arr = -1
+let merge_last_swap_old_pos = -1
+
+
+function mergeSort()
+{
+    if (currently_sorting) return
+    currently_sorting = true
+    pass = 0
+    currentElement = 0
+    total_comparisons = 0
+    total_swaps = 0
+    lastSwapped1 = -1
+    lastSwapped2 = -1
+
+
+    old_arrays = []
+    for (element of sorting_array) {
+        old_arrays.push([element])
+    }
+    
+    new_arrays = []
+    new_arrays.push([])
+
+    old_array_1 = 0
+    old_array_1_pos = 0
+    old_array_2 = 1
+    old_array_2_pos = 0
+    new_array = 0
+
+    interval_varible = window.setInterval(merge_nextStep, sort_delay)
+}
+
+function merge_nextStep() {
+    merge_array()
+
+    fill_sorting_array()
+    drawArray()
+    draw_last_swapped()
+    updateStats()
+}
+
+function merge_array() {
+    let array_1_empty = old_array_1_pos >= old_arrays[old_array_1].length;
+    let array_2_empty = old_array_2_pos >= old_arrays[old_array_2].length;
+    if (array_1_empty && array_2_empty) {
+        old_array_1 += 2
+        old_array_2 += 2
+        old_array_1_pos = 0
+        old_array_2_pos = 0
+        merge_last_swap_new_arr = -1
+        merge_last_swap_new_pos = -1
+        merge_last_swap_old_arr = -1
+        merge_last_swap_old_pos = -1
+        if (old_array_2 >= old_arrays.length) {
+            if (old_array_1 < old_arrays.length) {
+                new_arrays.push(old_arrays[old_array_1])
+            }
+            // new pass
+            new_pass()
+            return
+        }
+        else {
+            new_array += 1
+            new_arrays.push([])
+        }
+    }
+    else if (array_1_empty) {
+        move_into_new_array(old_array_2, old_array_2_pos)
+        old_array_2_pos += 1
+    }
+    else if (array_2_empty) {
+        move_into_new_array(old_array_1, old_array_1_pos)
+        old_array_1_pos += 1
+    }
+    else {
+        total_comparisons += 1;
+        if (old_arrays[old_array_1][old_array_1_pos] < old_arrays[old_array_2][old_array_2_pos]) {
+            move_into_new_array(old_array_1, old_array_1_pos)
+            old_array_1_pos += 1
+        }
+        else {
+            move_into_new_array(old_array_2, old_array_2_pos)
+            old_array_2_pos += 1
+        }
+    }
+}
+
+function move_into_new_array(old_array, old_array_pos) {
+    merge_last_swap_new_arr = new_array
+    merge_last_swap_new_pos = new_arrays[new_array].length
+    merge_last_swap_old_arr = old_array
+    merge_last_swap_old_pos = old_array_pos
+
+    total_swaps += 1;
+    new_arrays[new_array].push(old_arrays[old_array][old_array_pos])
+    old_arrays[old_array][old_array_pos] = -1
+}
+
+function new_pass() {
+    if (new_arrays.length == 1) {
+        fill_sorting_array()
+        stopSorting()
+        return
+    }
+
+    pass += 1
+    old_arrays = new_arrays
+    new_arrays = []
+    new_arrays.push([])
+
+    old_array_1 = 0
+    old_array_1_pos = 0
+    old_array_2 = 1
+    old_array_2_pos = 0
+    new_array = 0
+}
+
+function fill_sorting_array() {
+    sorting_array = []
+    for (let i = 0; i < new_arrays.length; i++) {
+        for (let j = 0; j < new_arrays[i].length; j++){
+            sorting_array.push(new_arrays[i][j])
+            if (i == merge_last_swap_new_arr && j == merge_last_swap_new_pos)
+            {
+                lastSwapped2 = lastSwapped1 = sorting_array.length - 1;
+            }
+        }
+    }
+    for (let i = 0; i < old_arrays.length; i++) {
+        for (let j = 0; j < old_arrays[i].length; j++){
+            let element = old_arrays[i][j]
+            if (element > 0)
+            {
+                sorting_array.push(element)
+            }
+        }
+    }
+}
+    </script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1 id="Title">Bubble Sort</h1>
+    <h2 id="Stats">Stats</h2>
+    <div id="Options">
+        <h2>Options</h2>
+        <select id="AlgorithmPicker" onchange="onAlgorithmChanged()">
+            <option value="Bubble Sort">Bubble Sort</option>
+            <option value="Merge Sort">Merge Sort</option>
+        </select>
+        <br>
+        <span class="OptionLabel">Number of elements:</span>
+        <input type="number" id="QuantityInput" name="QuantityInput" min=2 max=500 value=100 onchange="onQuantityChanged()">
+        <span class="OptionLabel">Delay:</span>
+        <input type="number" id="DelayInput" name="DelayInput" min=1 max=500 value=10 onchange="onDelayChanged()">
+        <div id="ControlButtons">
+            <button id="ResetButton" onclick="reset()">Reset</button>
+            <button id="RunButton" onclick="run_sort()">Run</button>
+        </div>
+    </div>
+    <canvas id="Canvas" width="600" height="600"></canvas>
+</body>
+</html>
