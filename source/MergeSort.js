@@ -49,6 +49,11 @@ function merge_nextStep() {
 
     fill_sorting_array()
     drawArray()
+
+    if (!currently_sorting) {
+        return;
+    }
+
     draw_last_swapped()
     merge_draw_comparison()
     updateStats()
